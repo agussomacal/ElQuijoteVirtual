@@ -74,16 +74,18 @@ w2v_model.most_similar(positive=["quijote"], negative=[], topn=25)
 
 topn = 20
 len_answer = 20
-starting_sentence = "Se paro en la colina y observo a lo lejos los molinos."
+starting_sentence = "Vaya a comer con los molinos"
 starting_sentence_list = starting_sentence.lower().split()
 answer_list = []
 for i in range(len_answer):
     words = [''] * topn
     proba = [0] * topn
     for i, (w, p) in enumerate(w2v_model.predict_output_word(starting_sentence_list + answer_list, topn=topn)):
-        words[i] = w
-        proba[i] = p
-    next_word = np.random.choice(words, p=np.array(proba)/np.array(proba).sum())
+        if w not in answer_list:
+            words[i] = w
+            proba[i] = p
+    # next_word = np.random.choice(words, p=np.array(proba)/np.array(proba).sum())
+    next_word = words[int(np.argmax(proba))]
     answer_list.append(next_word)
 answer = ' '.join(answer_list)
 print(starting_sentence)
